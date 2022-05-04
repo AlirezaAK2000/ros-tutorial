@@ -52,7 +52,7 @@ class Controller:
         
         orientation = msg.pose.pose.orientation
         
-        # convert quaternion to odom
+        # convert quaternion to euler
         roll, pitch, yaw = tf.transformations.euler_from_quaternion((
             orientation.x ,orientation.y ,orientation.z ,orientation.w
         )) 
