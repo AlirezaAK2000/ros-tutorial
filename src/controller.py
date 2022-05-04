@@ -6,6 +6,7 @@ import tf
 from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
+from math import pi
 
 from math import radians
 
@@ -36,6 +37,13 @@ class Controller:
         if msg.ranges[0] <= self.stop_distance:
             self.state = self.ROTATE
     
+    def normalize_angle(self ,angle):
+        res = angle
+        while res > pi:
+            res -= 2.0 * pi
+        while res < -pi:
+            res += 2.0 * pi
+        return res
     # heading of the robot 
     def get_heading(self):
         
@@ -76,9 +84,10 @@ class Controller:
             # rotation loop
             while remaining >= self.epsilon:
                 current_angle = self.get_heading()
-                delta = abs(prev_angle - current_angle)
+                delta = self.normalize_angle(prev_angle - current_angle)
                 remaining -= delta
                 prev_angle = current_angle
+                print(f"{remaining} {current_angle}")
             
             self.cmd_publisher.publish(Twist())
 
